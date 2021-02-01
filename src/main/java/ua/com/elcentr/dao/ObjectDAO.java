@@ -1,6 +1,7 @@
 package ua.com.elcentr.dao;
 
 import ua.com.elcentr.model.Customer;
+import ua.com.elcentr.model.Object;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,16 +12,16 @@ import java.util.logging.Logger;
 
 import static java.util.Objects.isNull;
 
-public class CustomerDAO {
+public class ObjectDAO {
 
-    private static final Logger LOG = Logger.getLogger(CustomerDAO.class.getName());
+    private static final Logger LOG = Logger.getLogger(Object.class.getName());
 
-    public static Customer save(String name, String notes) {
+    public static Object save(String name, String notes) {
         String sql = "" +
-                "INSERT INTO customers(name, notes) " +
+                "INSERT INTO objects(name, notes) " +
                 "VALUES(?,?)";
         String sequenceSql = "" +
-                "SELECT currval('customer_id_seq')";
+                "SELECT currval('object_id_seq')";
 
         try (
                 Connection connection = ConnectionToDB.getConnection();
@@ -35,7 +36,7 @@ public class CustomerDAO {
             while (resultSet.next()) {
                 id = resultSet.getInt(1);
             }
-            return Customer.builder()
+            return Object.builder()
                     .id(id)
                     .name(name)
                     .notes(notes)
@@ -46,12 +47,12 @@ public class CustomerDAO {
         throw new RuntimeException(String.format("Customer with name %s was not created", name));
     }
 
-    public static Customer update(Integer id, String name, String notes) {
+    public static Object update(Integer id, String name, String notes) {
         if (isNull(id)) {
             throw new RuntimeException("id is null, update is impossible");
         }
         String sql = "" +
-                "UPDATE customers " +
+                "UPDATE objects " +
                 "SET name=?, notes=? " +
                 "WHERE id=?";
         try (
@@ -62,7 +63,7 @@ public class CustomerDAO {
             preparedStatement.setString(2, notes);
             preparedStatement.setInt(3, id);
             preparedStatement.executeUpdate();
-            return Customer.builder()
+            return Object.builder()
                     .id(id)
                     .name(name)
                     .notes(notes)
@@ -73,9 +74,9 @@ public class CustomerDAO {
         throw new RuntimeException(String.format("User with id %d was not updated", id));
     }
 
-    public static Optional<Customer> findById(Integer id) {
+    public static Optional<Object> findById(Integer id) {
         String sql = "" +
-                "SELECT * FROM customers " +
+                "SELECT * FROM objects " +
                 "WHERE id=?";
         try (
                 Connection connection = ConnectionToDB.getConnection();
@@ -85,12 +86,12 @@ public class CustomerDAO {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
-                Customer customer = Customer.builder()
+                Object object = Object.builder()
                         .id(resultSet.getInt("id"))
                         .name(resultSet.getString("name"))
                         .notes(resultSet.getString("notes"))
                         .build();
-                return Optional.of(customer);
+                return Optional.of(object);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -103,7 +104,7 @@ public class CustomerDAO {
             throw new RuntimeException("id is null, delete is impossible");
         }
         String sql = "DELETE " +
-                "FROM customers " +
+                "FROM objects " +
                 "WHERE id=?";
         try (
                 Connection connection = ConnectionToDB.getConnection();
@@ -115,5 +116,4 @@ public class CustomerDAO {
             e.printStackTrace();
         }
     }
-
 }
