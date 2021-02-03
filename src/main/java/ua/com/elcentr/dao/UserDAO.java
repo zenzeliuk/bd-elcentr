@@ -17,35 +17,35 @@ public class UserDAO {
 
     private static final Logger LOG = Logger.getLogger(UserDAO.class.getName());
 
-//    public static User getUserByLoginAndPassword(String login, String password) {
-//        String sql = "" +
-//                "SELECT * " +
-//                "FROM users " +
-//                "WHERE login=? " +
-//                "AND password=?";
-//        try (
-//                Connection connection = ConnectionToDB.getConnection();
-//                PreparedStatement preparedStatement = connection.prepareStatement(sql)
-//        ) {
-//            preparedStatement.setString(1, login);
-//            preparedStatement.setString(2, password);
-//            ResultSet resultSet = preparedStatement.executeQuery();
-//
-//            while (resultSet.next()) {
-//                return User.builder()
-//                        .id(resultSet.getInt("id"))
-//                        .login(resultSet.getString("login"))
-//                        .password(resultSet.getString("password"))
-//                        .firstName(resultSet.getString("first_name"))
-//                        .lastName(resultSet.getString("last_name"))
-//                        .build();
-//            }
-//
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//        throw new RuntimeException(String.format("User with login %s and password %s was not found", login, password));
-//    }
+    public static User getUserByLoginAndPassword(String login, String password) {
+        String sql = "" +
+                "SELECT * " +
+                "FROM users " +
+                "WHERE login=? " +
+                "AND password=?";
+        try (
+                Connection connection = ConnectionToDB.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(sql)
+        ) {
+            preparedStatement.setString(1, login);
+            preparedStatement.setString(2, password);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                return User.builder()
+                        .id(resultSet.getInt("id"))
+                        .login(resultSet.getString("login"))
+                        .password(resultSet.getString("password"))
+                        .firstName(resultSet.getString("first_name"))
+                        .lastName(resultSet.getString("last_name"))
+                        .build();
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        throw new RuntimeException(String.format("User with login %s and password %s was not found", login, password));
+    }
 
     public static User save(String login, String password, String firstName, String lastName) {
         String sql = "" +
